@@ -12,9 +12,12 @@ NOTE: this plugin is currently under development and subject to change
 You will need a RightScale account with at least one cloud registered.  You can 
 sign up for a free trial account [here](https://www.rightscale.com).  
 
-This plugin cannot currently provision servers on EC2. If you need this 
-capability and would like to part in a private beta to enable that 
-functionality, please contact support@rightscale.com.
+I was lazy and only added support for the RightScale API 1.5 (since API 1.0 is 
+EC2 only and deprecated).  As such, this plugin cannot currently provision 
+servers on EC2. If you need this capability and would like to part in a private 
+beta to enable that functionality, please contact support@rightscale.com and 
+they will hook you up.  If you have any problems, please send me an email 
+directly.
 
 You will also need a running Chef Server.  If you don't already have one you can
 sign up for a free trial of Hosted Chef from Opscode [here](http://www.opscode.com/hosted-chef/).
@@ -155,7 +158,7 @@ to filter by partial name match use the ```--name``` option
  * create action
    * ability to select image other than the default image on ServerTemplate
    * ability to select instance type other than default (needed for cloudstack)
- * add support for instance type (list and for server create)
+ * add support for instance type aka "flavor" (list and for server create)
  * add support for datacents/zone type (list and for server create)
  ** Private beta
  * display audit entry when server strands
