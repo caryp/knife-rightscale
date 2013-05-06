@@ -122,7 +122,7 @@ module RightApiProvision
     def list_deployments(name)
     end
   
-    # @return [Array] an array of {DTO::MultCloudImage} objects
+    # @return [Array] an array of {DTO::MultiCloudImage} objects
     # @TODO: can we speed things up with filtering by cloud id?
     def list_multi_cloud_images(name)
     end  
