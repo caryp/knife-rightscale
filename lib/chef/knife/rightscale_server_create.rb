@@ -3,7 +3,7 @@
 # Copyright:: Copyright (c) 2013 RightScale, Inc.
 # License:: Apache License, Version 2.0
 #
-# This file is modified from the knife-ec2 plugin project code 
+# This file is modified from the knife-ec2 plugin project code
 # That project is located at https://github.com/opscode/knife-ec2
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
@@ -78,20 +78,20 @@ class Chef
         :long => "--input NAME:VALUE",
         :description => "An input name and value",
         :proc => lambda { |o| k,v=o.split(":",2); @@inputs[k]=v }
-      
+
       option :ssh_key_name,
         :short => "-S KEY_UUID",
         :long => "--ssh-key KEY_UUID",
         :description => "The AWS SSH key resource UUIS",
         :proc => Proc.new { |key| Chef::Config[:knife][:ssh_key_uuid] = key }
-        
+
       # Gets applied to chef/client/roles input of ServerTemplate, if it exists
       # option :run_list,
       #   :short => "-r RUN_LIST",
       #   :long => "--run-list RUN_LIST",
       #   :description => "Comma separated list of roles/recipes to apply.",
       #   :proc => lambda { |o| o.split(/[\s,]+/) }
-      # 
+      #
       # option :json_attributes,
       #   :short => "-j JSON",
       #   :long => "--json-attributes JSON",
@@ -102,7 +102,7 @@ class Chef
       #   :long => "--bootstrap-version VERSION",
       #   :description => "The version of Chef to install",
       #   :proc => Proc.new { |v| Chef::Config[:knife][:bootstrap_version] = v }
-      # 
+      #
       # option :chef_node_name,
       #   :short => "-N NAME",
       #   :long => "--node-name NAME",
@@ -114,18 +114,24 @@ class Chef
       #   :long => "--flavor FLAVOR",
       #   :description => "The flavor of server (m1.small, m1.medium, etc)",
       #   :proc => Proc.new { |f| Chef::Config[:knife][:flavor] = f }
-      # 
+      #
       # option :image,
       #   :short => "-I IMAGE",
       #   :long => "--image IMAGE",
       #   :description => "The AMI for the server",
       #   :proc => Proc.new { |i| Chef::Config[:knife][:image] = i }
-      # 
+      #
       option :security_groups,
               :short => "-G X,Y,Z",
               :long => "--groups X,Y,Z",
               :description => "The security groups for this server; not allowed when using VPC",
               :proc => Proc.new { |groups| groups.split(',') }
+
+      option :wait_for_operational,
+              :long => "--[no-]block",
+              :description => "Exit after server launch -- don't wait for operational. (non-blocking)",
+              :boolean => true,
+              :default => true
 
       def run
         $stdout.sync = true
@@ -139,27 +145,33 @@ class Chef
         print "\n#{ui.color("Cloud:", :magenta)} #{config[:cloud_name]}"
         print "\n#{ui.color("Deployment name:", :magenta)} #{config[:deployment_name]}"
         print "\n#{ui.color("Inputs:", :magenta)} #{@@inputs}"
+        print "\n#{ui.color("Wait for Operational:", :magenta)} FALSE" if config[:no_wait]
         print "\n"
-        
+
         rightscale = ::RightApiProvision::Provisioner.new(connection)
-        rightscale.provision(
-          config[:server_template], 
-          config[:server_name], 
-          config[:cloud_name], 
-          config[:deployment_name],
-          @@inputs,
-          config[:ssh_key_name],
-          config[:security_groups]
-        )
-        
+                rightscale.provision(
+                  config[:server_template],
+                  config[:server_name],
+                  config[:cloud_name],
+                  config[:deployment_name],
+                  @@inputs,
+                  config[:ssh_key_name],
+                  config[:security_groups]
+                )
+
+        unless config[:wait_for_operational]
+          print "#{ui.color("Server launched -- exiting.", :green)}"
+          return
+        end
+
         if rightscale.server_ready?
           print "#{ui.color("Server already running", :green)}"
-        else
+        elsif
           print "\n#{ui.color("Waiting for RightScale to configure server\n", :yellow)}"
           rightscale.wait_for_operational
           print "\n"
         end
-        
+
         # output connection information
         print "#{ui.color("Querying server info...\n", :magenta)}"
         info = rightscale.server_info

@@ -1,5 +1,3 @@
-require "bundler/gem_tasks"
-
 #
 # Author:: Cary Penniman (<cary@rightscale.com>)
 # Copyright:: Copyright (c) 2013 RightScale, Inc.
@@ -17,6 +15,20 @@ require "bundler/gem_tasks"
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require "bundler/gem_tasks"
+require "rdoc/task"
+require "yard"
+
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/**/*.rb']
+end
+
+Rake::RDocTask.new(:rdoc) do |rd|
+  rd.main = "README.doc"
+  rd.rdoc_files.include("README.md", "lib/**/*.rb")
+  rd.options << "--all"
+end
+
 require 'rspec/core/rake_task'
 
 desc "Run all specs in spec directory"

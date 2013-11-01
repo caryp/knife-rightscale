@@ -1,60 +1,54 @@
 # Knife RightScale
 
-This is a Knife plugin for RightScale. This plugin gives knife the ability to 
-provision servers on clouds managed by the RightScale platform.  It is expected 
-that you already have a Chef Server running or are using a hosted Chef solution 
+This is a Knife plugin for RightScale. This plugin gives knife the ability to
+provision servers on clouds managed by the RightScale platform.  It is expected
+that you already have a Chef Server running or are using a hosted Chef solution
 from OpsCode.
 
 NOTE: this plugin is currently under development and subject to change
 
 ## REQUIREMENTS:
 
-You will need a RightScale account with at least one cloud registered.  You can 
-sign up for a free trial account [here](https://www.rightscale.com).  
-
-I was lazy and only added support for the RightScale API 1.5 (since API 1.0 is 
-EC2 only and deprecated).  As such, this plugin cannot currently provision 
-servers on EC2. If you need this capability and would like to part in a private 
-beta to enable that functionality, please contact support@rightscale.com and 
-they will hook you up.  If you have any problems, please send me an email 
-directly.
+You will need a RightScale account with at least one cloud registered.  You can
+sign up for a free trial account [here](https://www.rightscale.com).
 
 You will also need a running Chef Server.  If you don't already have one you can
 sign up for a free trial of Hosted Chef from Opscode [here](http://www.opscode.com/hosted-chef/).
 
+If you have an existing account and want to provision on EC2 clouds, you may need to migrate your account to the Unified Cloud Platform. Please see [here](http://support.rightscale.com/Announcements/2013-09-20_Unified_Cloud_Platform_Migration_Details) for more info on UCP.
 
 ## INSTALLATION:
 
 Be sure you are running the latest version Chef 10. Versions earlier than 0.10.0
 don't support plugins.  This has not yet been tested with Chef 11.
 
-    gem install chef -v 10.24.0
+    gem install chef -v 10.26.0
 
 This plugin is distributed as a Ruby Gem. To install it, run:
 
     gem install knife-rightscale
 
-Depending on your system's configuration, you may need to run this command with 
+Depending on your system's configuration, you may need to run this command with
 root privileges.
 
 ## CONFIGURATION:
 
-In order to communicate with the RightScale API you will have to tell Knife 
-about your RightScale account information.  The easiest way to accomplish this 
+In order to communicate with the RightScale API you will have to tell Knife
+about your RightScale account information.  The easiest way to accomplish this
 is to create some entries in your <tt>knife.rb</tt> file:
 
     knife[:rightscale_user]  = "you@yourdomain.com"
     knife[:rightscale_password] = "supersecretpassword"
     knife[:rightscale_account_id] = "1234"
 
-If your knife.rb file will be checked into a SCM system (ie readable by others) 
+If your knife.rb file will be checked into a SCM system (i.e. readable by others)
 you may want to read the values from environment variables:
 
     knife[:rightscale_user] = "#{ENV['RIGHTSCALE_EMAIL']}"
     knife[:rightscale_password] = "#{ENV['RIGHTSCALE_PASSWORD']}"
 
-You also have the option of passing your RightScale credentials into the 
-individual knife subcommands using the <tt>-A</tt> (or <tt>--rightscale-account-id</tt>), 
+You also have the option of passing your RightScale credentials into the
+individual knife subcommands using the <tt>-A</tt> (or <tt>--rightscale-account-id</tt>),
 <tt>-U</tt> (or <tt>--rightscale-user</tt>), <tt>-P</tt> (or <tt>--rightscale-password</tt>) command options
 
 ## Provision a Server
@@ -72,18 +66,18 @@ to filter by partial name match use ```-n``` or ```--name``` option
 List the ServerTemplates available in your account.  Typically you will just want to find a Chef Client template.  For example:
 
     knife rightscale servertemplate list --name "Chef Client"
-    
+
 ### Launch a server
 To provision a new server, supply ServerTemplate choice and target cloud as options:
 
     knife rightscale server create \
       --cloud "Rackspace Open Cloud - Chicago" \
       --server-template "Chef Client (v13.4)" \
-      --deployment "CKP: My Sandbox" \
-      --name "CKP:ChefClient" \
+      --deployment "CP: My Sandbox" \
+      --name "CP:ChefClient" \
       --input "chef/client/server_url":"text:https://api.opscode.com/organizations/kindsol" \
-      --input "chef/client/validation_name":"cred:CKP: validation_client_name" \
-      --input "chef/client/validator_pem":"cred:CKP:validator.pem" \
+      --input "chef/client/validation_name":"cred:CP: validation_client_name" \
+      --input "chef/client/validator_pem":"cred:CP:validator.pem" \
       --input "chef/client/node_name":"text:MyChefClient" \
       --input "chef/client/roles":"text:hello_world"
 
@@ -105,15 +99,15 @@ use the ```--yes``` option to bypass confirmation.
 
 ## OTHER SUBCOMMANDS:
 
-Some other subcommands that can be useful for provisioning servers are listed 
-below.  These are intended to query possible options that you can pass to the 
-server create command. 
+Some other subcommands that can be useful for provisioning servers are listed
+below.  These are intended to query possible options that you can pass to the
+server create command.
 
 All supported command options can be found by invoking:
 
-    knife rightscale --help 
+    knife rightscale --help
 
-Specific details for each command can be found by passing the ```--help``` 
+Specific details for each command can be found by passing the ```--help```
 option the the subcommand.  For example:
 
     knife rightscale <subcommand> --help
@@ -127,7 +121,7 @@ List the supported images for a given ServerTemplate and target cloud
       --cloud "Rackspace Open Cloud - Chicago"
 
 This will also indicate the default Instance Type or flavor for each image.
-
+
 
 ### List Deployments
 To list all the deployments available in your RightScale account:
@@ -142,7 +136,7 @@ To list all the Security Groups available per cloud:
 
     knife rightscale securitygroup list
 
-to filter by partial name match use the ```--name``` option or narrow the 
+to filter by partial name match use the ```--name``` option or narrow the
 results using the ```--cloud``` option
 
 
@@ -163,11 +157,11 @@ to filter by partial name match use the ```--name``` option
  ** Private beta
  * display audit entry when server strands
  * ability to add server tags on create
- * server array create action 
- * add timeout for operational 
+ * server array create action
+ * add timeout for operational
  * credentials list action (waiting for new API release)
  * add VPC support to create action
- 
+
 
 ## LICENSE:
 
@@ -176,7 +170,7 @@ Copyright:: Copyright (c) 2013 RightScale, Inc.
 License:: Apache License, Version 2.0
 See attribution notice in README.md
 
-This readme is modified from the knife-ec2 plugin project code 
+This readme is modified from the knife-ec2 plugin project code
 That project is located at https://github.com/opscode/knife-ec2
 Author:: Adam Jacob (<adam@opscode.com>)
 Copyright:: Copyright (c) 2009-2011 Opscode, Inc.

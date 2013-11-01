@@ -34,6 +34,10 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.add_dependency "right_api_client", "~> 1.5"
+  gem.add_dependency "rake"
+  gem.add_dependency "yard"
+  gem.add_dependency "rspec"
+  gem.add_dependency "chef"
 
   gem.require_paths = ["lib"]
 end
