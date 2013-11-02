@@ -32,7 +32,7 @@ class Chef
       include Knife::RightscaleBase
 
       deps do
-        require 'right_api_client'
+        require 'right_api_provision'
       end
 
       banner "knife rightscale server create (options)"
@@ -50,8 +50,7 @@ class Chef
         :short => "-s NAME",
         :long => "--server-template NAME",
         :description => "The name of the ServerTemplate or ID to use for the server",
-        :proc => Proc.new { |i| Chef::Config[:knife][:server_template] = i },
-        :required => true
+        :proc => Proc.new { |i| Chef::Config[:knife][:server_template] = i }
 
       option :server_name,
         :short => "-n SERVERNAME",
@@ -148,10 +147,10 @@ class Chef
         print "\n#{ui.color("Wait for Operational:", :magenta)} FALSE" if config[:no_wait]
         print "\n"
 
-        rightscale = ::RightApiProvision::Provisioner.new(connection)
-                rightscale.provision(
-                  config[:server_template],
+        rightscale = get_rightscale_provisioner
+        rightscale.provision(
                   config[:server_name],
+                  config[:server_template],
                   config[:cloud_name],
                   config[:deployment_name],
                   @@inputs,
@@ -183,6 +182,11 @@ class Chef
       end
 
     private
+
+      def get_rightscale_provisioner
+        right_api_provision = ::RightApiProvision::Provisioner.new(connection)
+        right_api_provision.logger = Logger.new(self.stdout)
+      end
 
       def validate!
         super([:cloud_name, :deployment_name, :server_template, :rightscale_user, :rightscale_password, :rightscale_account_id])

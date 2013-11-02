@@ -2,3 +2,5 @@ v0.0.2
   * initial release
 v0.0.3
   * Updated Gemspec with right_api_client dependency. by kevinkarwaski
+v0.0.4
+  * retrofit to use right_api_provision client gem

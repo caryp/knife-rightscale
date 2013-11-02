@@ -3,7 +3,7 @@
 # Copyright:: Copyright (c) 2013 RightScale, Inc.
 # License:: Apache License, Version 2.0
 #
-# This file is modified from the knife-ec2 plugin project code 
+# This file is modified from the knife-ec2 plugin project code
 # That project is located at https://github.com/opscode/knife-ec2
 # Author:: Seth Chisamore <schisamo@opscode.com>
 # Copyright:: Copyright (c) 2011 Opscode, Inc.
@@ -36,7 +36,7 @@ class Chef
         includer.class_eval do
 
           deps do
-            require 'right_api_client'
+            require 'right_api_provision'
           end
 
           option :rightscale_user,
@@ -71,9 +71,9 @@ class Chef
         @connection ||= begin
           client = ::RightApiProvision::API15.new
           client.connection(
-            Chef::Config[:knife][:rightscale_user], 
-            Chef::Config[:knife][:rightscale_password],  
-            Chef::Config[:knife][:rightscale_account_id], 
+            Chef::Config[:knife][:rightscale_user],
+            Chef::Config[:knife][:rightscale_password],
+            Chef::Config[:knife][:rightscale_account_id],
             Chef::Config[:knife][:rightscale_api_url]
           )
           client
@@ -96,7 +96,7 @@ class Chef
 
         keys.each do |k|
           pretty_key = k.to_s.gsub(/_/, ' ').gsub(/\w+/){ |w| (w =~ /(ssh)|(aws)/i) ? w.upcase  : w.capitalize }
-          if Chef::Config[:knife][k].nil?
+          if Chef::Config[:knife][k].nil? && config[k].nil?
             errors << "You did not provide a valid '#{pretty_key}' value."
           end
         end

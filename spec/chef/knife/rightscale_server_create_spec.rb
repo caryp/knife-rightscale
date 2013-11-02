@@ -18,15 +18,31 @@
 
 require File.expand_path('../../../spec_helper', __FILE__)
 
+Chef::Knife::RightscaleServerCreate.load_deps
+
 describe Chef::Knife::RightscaleServerCreate do
-  before do
-
+  before(:each) do
+    Chef::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Chef::Knife::RightscaleServerCreate.new
+    @stdout = StringIO.new
+    @knife.stub(:stdout).and_return(@stdout)
+    provisionerStub = double("provisioner")
+    provisionerStub.stub(:provision)
+    @knife.stub(:get_rightscale_provisioner).and_return(provisionerStub)
   end
 
-  pending "run" do
-    it "create and launch server" do
-      puts "some statement here about good intentions"
-    end
+  it "provisions server" do
+    @knife.config = {
+      :server_template => "my servertemplate",
+      :deployment_name => 'my deployment',
+      :server_name => 'my server',
+      :cloud_name => "my favorite cloud",
+      :rightscale_user => "someuser",
+      :rightscale_password => "somepassword",
+      :rightscale_account_id => "1234"
+    }
+    @knife.run
   end
+
 
 end

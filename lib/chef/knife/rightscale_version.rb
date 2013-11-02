@@ -16,8 +16,20 @@
 # limitations under the License.
 #
 
-module RightApiProvision
-  class RightApiProvisionException
-    # TODO
+require 'chef/knife/rightscale_base'
+
+class Chef
+  class Knife
+    class RightscaleVersion < Knife
+
+      include Knife::RightscaleBase
+
+      banner "knife rightscale version"
+
+      def run
+        print "#{::Knife::Rightscale::VERSION}\n"
+      end
+
+    end
   end
 end
