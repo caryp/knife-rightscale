@@ -147,6 +147,22 @@ To list all the servers in your RightScale account:
 
 to filter by partial name match use the ```--name``` option
 
+## DEVELOPMENT
+
+You can develop this plugin with out installing it using the bundler gem.  First clone this repository, change to the working directory and run:
+
+	bundle
+
+Verify the unit test pass:
+
+	bundle exec rake spec
+
+Once those are passing you can run the plugin using `bundle exec`.  For example, to view the help message run:
+
+	bundle exec knife rightscale --help
+
+Happy hacking!
+
 
 ## FUTURE FEATURES
  * create action
