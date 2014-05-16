@@ -25,15 +25,15 @@ class Chef
       include Knife::RightscaleBase
 
       deps do
-        require 'right_api_provision'
+        require 'right_api_helper'
       end
-      
+
       option :security_group_name,
         :short => "-n SECURITYGROUP_NAME",
         :long => "--name SECURITYGROUP_NAME",
         :description => "The partial name of the security group to search for",
         :proc => Proc.new { |i| Chef::Config[:knife][:security_group_name] = i }
-        
+
       option :cloud_name,
         :short => "-C CLOUD_NAME",
         :long => "--cloud CLOUD_NAME",
@@ -54,9 +54,10 @@ class Chef
           ui.color('Name', :bold),
           ui.color('Resource UID', :bold)
         ].flatten.compact
-      
+
         output_column_count = security_group_list.length
         @clouds.each do |cloud|
+          next unless connection.requires_security_groups?(cloud)
           @security_groups = connection.list_security_groups(cloud, :by_name, config[:security_group_name])
           @security_groups.each do |security_group|
             security_group_list << cloud.name
@@ -66,13 +67,13 @@ class Chef
         end
         puts ui.list(security_group_list, :uneven_columns_across, output_column_count)
       end
-      
+
       private
 
       def validate!
         super([:rightscale_user, :rightscale_password, :rightscale_account_id])
       end
-      
+
     end
   end
 end

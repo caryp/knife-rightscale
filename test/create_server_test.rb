@@ -16,48 +16,47 @@
 # limitations under the License.
 #
 
-# def run(knife_command)
-#   cmd = "bundle exec #{knife_command} --yes"
-#   puts "Command: #{cmd}"
-#   puts `#{cmd}`
-#   raise "ERROR: #{cmd} failed" unless $? == 0
-# end
-#
-# describe "provision a ChefClient on each cloud" do
-#
-#   [
-#     "EC2 us-west-2",
-#     "CS 2.2.14 Eng - XenServer",
-#     "Google",
-#     "HP Cloud",
-#     "Rackspace Open Cloud - Chicago"
-#   ].each do |cloud_name|
-#
-#     it "can provision on '#{cloud_name}'" do
-#
-#       run "knife rightscale server create --cloud '#{cloud_name}' " +
-#           "--server-template 291069003  --deployment 'KNIFE: test knife-provisioner' " +
-#           "--name 'KNIFE:ChefClient #{cloud_name}' " +
-#           "--no-block " +
-#           "--input 'chef/client/server_url':'text:https://api.opscode.com/organizations/kindsol' " +
-#           "--input 'chef/client/validation_name':'cred:CKP: validation_client_name' " +
-#           "--input 'chef/client/validator_pem':'cred:CKP:validator.pem' " +
-#           "--input 'chef/client/node_name':'text:MyChefClient' " +
-#           "--input 'chef/client/roles':'text:hello_world' "
-#     end
-#   end
-#
-#     it "can delete server on '{cloud_name}'" do
-#       # wait for all servers (fail or pass)
-#
-#       # -        begin
-#       # -          run "knife rightscale server delete 'KNIFE:ChefClient #{cloud_name}'"
-#       # -        ensure
-#       # -          run "knife client delete MyChefClient"
-#       # -          run "knife node delete MyChefClient"
-#       # -        end
-#     end
-#
-# end
+def run(knife_command)
+  cmd = "bundle exec #{knife_command} --yes"
+  puts "Command: #{cmd}"
+  puts `#{cmd}`
+  raise "ERROR: #{cmd} failed" unless $? == 0
+end
+
+describe "provision a ChefClient on each cloud" do
+
+  [
+    "EC2 us-west-2",
+    "Google",
+    "Openstack Havana",
+    "VScale Engineering v5.5"
+  ].each do |cloud_name|
+
+    it "can provision on '#{cloud_name}'" do
+
+      run "knife rightscale server create --cloud '#{cloud_name}' " +
+          "--server-template 328222001  --deployment 'KNIFE: test knife-provisioner' " +
+          "--name 'KNIFE:ChefClient #{cloud_name}' " +
+          "--no-block " +
+          "--input 'chef/client/server_url':'text:https://api.opscode.com/organizations/kindsol' " +
+          "--input 'chef/client/validation_name':'cred:CKP: validation_client_name' " +
+          "--input 'chef/client/validator_pem':'cred:CKP:validator.pem' " +
+          "--input 'chef/client/node_name':'text:MyChefClient' " +
+          "--input 'chef/client/roles':'text:hello_world' "
+    end
+  end
+
+    it "can delete server on '{cloud_name}'" do
+      # wait for all servers (fail or pass)
+
+      # -        begin
+      # -          run "knife rightscale server delete 'KNIFE:ChefClient #{cloud_name}'"
+      # -        ensure
+      # -          run "knife client delete MyChefClient"
+      # -          run "knife node delete MyChefClient"
+      # -        end
+    end
+
+end
 
 

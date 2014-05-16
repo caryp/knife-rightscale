@@ -32,7 +32,7 @@ class Chef
       include Knife::RightscaleBase
 
       deps do
-        require 'right_api_provision'
+        require 'right_api_helper'
       end
 
       banner "knife rightscale server create (options)"
@@ -154,6 +154,7 @@ class Chef
                   config[:cloud_name],
                   config[:deployment_name],
                   @@inputs,
+                  nil, # MCI not yet supported
                   config[:ssh_key_name],
                   config[:security_groups]
                 )
@@ -184,8 +185,7 @@ class Chef
     private
 
       def get_rightscale_provisioner
-        right_api_provision = ::RightApiProvision::Provisioner.new(connection)
-        right_api_provision.logger = Logger.new(self.stdout)
+        RightApiHelper::Provisioner.new(right_api_client)
       end
 
       def validate!

@@ -18,8 +18,7 @@
 
 require "knife-rightscale/version"
 
-require "right_api_provision/api15"
-require "right_api_provision/provisioner"
+require "right_api_helper"
 
 require "chef/knife/rightscale_cloud_list"
 require "chef/knife/rightscale_deployment_list"

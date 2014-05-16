@@ -25,7 +25,7 @@ class Chef
       include Knife::RightscaleBase
 
       deps do
-        require 'right_api_provision'
+        require 'right_api_helper'
       end
 
       option :server_template,

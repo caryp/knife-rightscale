@@ -22,8 +22,7 @@
 # limitations under the License.
 #
 require 'chef/knife'
-require 'right_api_provision/provisioner'
-require 'right_api_provision/api15'
+require 'right_api_helper'
 
 class Chef
   class Knife
@@ -36,7 +35,7 @@ class Chef
         includer.class_eval do
 
           deps do
-            require 'right_api_provision'
+            require 'right_api_helper'
           end
 
           option :rightscale_user,
@@ -69,15 +68,29 @@ class Chef
 
       def connection
         @connection ||= begin
-          client = ::RightApiProvision::API15.new
-          client.connection(
-            Chef::Config[:knife][:rightscale_user],
-            Chef::Config[:knife][:rightscale_password],
-            Chef::Config[:knife][:rightscale_account_id],
-            Chef::Config[:knife][:rightscale_api_url]
-          )
-          client
+          api_shim = RightApiHelper::API15.new(right_api_client)
+          set_log_level(api_shim)
+          api_shim
         end
+      end
+
+      def right_api_client
+        @right_api_client ||= begin
+          session = RightApiHelper::Session.new
+          set_log_level(session)
+          right_api_client = session.create_client(
+              Chef::Config[:knife][:rightscale_user],
+              Chef::Config[:knife][:rightscale_password],
+              Chef::Config[:knife][:rightscale_account_id],
+              Chef::Config[:knife][:rightscale_api_url]
+            )
+          right_api_client
+        end
+      end
+
+      def set_log_level(obj)
+        log_level = (config[:verbosity] >= 1) ? Logger::DEBUG : Logger::INFO
+        obj.log_level(log_level)
       end
 
       def locate_config_value(key)

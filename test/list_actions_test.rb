@@ -27,25 +27,25 @@ describe "run list actions" do
   it "lists security groups" do
     run_list_command("securitygroup")
   end
-  
+
   it "lists clouds" do
     run_list_command("cloud")
   end
-  
+
   it "lists deployments" do
     run_list_command("deployment")
   end
-  
+
   it "lists servers" do
     run_list_command("server")
   end
-  
+
   it "lists servertemplate" do
     run_list_command("servertemplate")
   end
-  
+
   it "lists images" do
-    run_list_command("image", "-s 292810003 --cloud 'EC2 us-west-2'")
+    run_list_command("image", "-s 328222001 --cloud 'EC2 us-west-2'")
   end
-  
+
 end
